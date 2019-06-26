@@ -94,6 +94,18 @@ To use this feature, add the `--cov` flag with (optional, but required) path to 
       pip install pytest pytest-azurepipelines pytest-cov
       pytest tests/ --cov my_project --cov-report html
 
+Running in Docker
+-----------------
+
+If running inside a docker container with paths from the host bind mounted in
+then the path reported by this library will not match the path observed by
+Azure Pipelines and it can be useful to supply the mapping using the command
+line option:
+
+.. code-block:: bash
+
+  --path-mapping [dockerpath] [hostpath]
+
 
 Contributing
 ------------
