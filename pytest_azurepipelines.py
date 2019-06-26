@@ -15,6 +15,13 @@ def pytest_addoption(parser):
         help="Set the Azure test run title.",
     )
     group.addoption(
+        "--path-mapping",
+        action="store",
+        dest="azure_path_mapping",
+        default="",
+        help="Useful to supply src:dest path mappings if running in docker.",
+    )
+    group.addoption(
         "--napoleon-docstrings",
         action="store_true",
         dest="napoleon",
@@ -90,6 +97,12 @@ def pytest_sessionfinish(session, exitstatus):
         )
         reportdir = os.path.normpath(os.path.abspath("htmlcov"))
         if os.path.exists(covpath):
+
+            path_mapping = session.config.option.azure_path_mapping
+            if ':' in path_mapping:
+                path_mapping_src, path_mapping_dest = path_mapping.split(':', 1)
+                covpath = covpath.replace(path_mapping_src, path_mapping_dest)
+                reportdir = reportdir.replace(path_mapping_src, path_mapping_dest)
             print(
                 "##vso[codecoverage.publish codecoveragetool=Cobertura;summaryfile={0};reportdirectory={1};]".format(
                     covpath, reportdir
