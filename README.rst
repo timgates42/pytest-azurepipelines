@@ -97,9 +97,9 @@ To use this feature, add the `--cov` flag with (optional, but required) path to 
 Running in Docker
 -----------------
 
-If running inside a docker container with paths from the host bind mounted in
-then the path reported by this library will not match the path observed by
-Azure Pipelines and it can be useful to supply the mapping using the command
+If running inside a docker container with path mounted in a different
+location, then the path reported by this library will not match the path observed by
+Azure Pipelines. It can be useful to supply the mapping using the command
 line option:
 
 .. code-block:: bash
