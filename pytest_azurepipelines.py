@@ -17,9 +17,10 @@ def pytest_addoption(parser):
     group.addoption(
         "--path-mapping",
         action="store",
+        nargs=2,
         dest="azure_path_mapping",
-        default="",
-        help="Useful to supply src:dest path mappings if running in docker.",
+        default=[],
+        help="Useful to supply the <container> <host> path mapping if running in docker.",
     )
     group.addoption(
         "--napoleon-docstrings",
@@ -99,8 +100,8 @@ def pytest_sessionfinish(session, exitstatus):
         if os.path.exists(covpath):
 
             path_mapping = session.config.option.azure_path_mapping
-            if ':' in path_mapping:
-                path_mapping_src, path_mapping_dest = path_mapping.split(':', 1)
+            if path_mapping and len(path_mapping) == 2:
+                path_mapping_src, path_mapping_dest = path_mapping
                 covpath = covpath.replace(path_mapping_src, path_mapping_dest)
                 reportdir = reportdir.replace(path_mapping_src, path_mapping_dest)
             print(
