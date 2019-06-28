@@ -10,5 +10,5 @@ DEBIAN_FRONTEND=noninteractive apt-get update -qq
 DEBIAN_FRONTEND=noninteractive apt-get install -qq -y --no-install-recommends apt-utils
 DEBIAN_FRONTEND=noninteractive apt-get install -qq -y --no-install-recommends python3 python3-pip
 python3 -m pip install --upgrade pip
-python3 -m pip install -e .
-pytest tests -v -m "not testfail"
+python3 -m pip install pytest pytest-cov
+python -m pytest --cov=. --cov-report=xml -v -m "not testfail" tests

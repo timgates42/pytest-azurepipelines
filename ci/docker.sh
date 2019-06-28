@@ -24,4 +24,4 @@ docker run \
     /workspace/ci/in_docker.sh | tee "${TMPFILE}"
 
 # Validate the path mapping has occurred.
-grep "^[#][#]vso[[].*${BASEDIR}" "${TMPFILE}"
+grep "^[#][#]*vso[[].*${BASEDIR}" "${TMPFILE}"
