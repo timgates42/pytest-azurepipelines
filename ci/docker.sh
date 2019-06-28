@@ -15,4 +15,7 @@ docker run \
     --rm \
     --mount "type=bind,src=${TOP},dst=/workspace" \
     ubuntu:18.04 \
-    /workspace/ci/in_docker.sh
+    /workspace/ci/in_docker.sh | tee "${TMPFILE}"
+
+# Validate the path mapping has occurred.
+grep "^[#][#]vso[[].*${BASEDIR}" "${TMPFILE}"
