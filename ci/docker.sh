@@ -24,4 +24,6 @@ docker run \
     /workspace/ci/in_docker.sh | tee "${TMPFILE}"
 
 # Validate the path mapping has occurred.
-grep "^[#][#]*vso[[].*${BASEDIR}" "${TMPFILE}"
+if ! grep "^[#][#]*vso[[].*${BASEDIR}" "${TMPFILE}" ; then
+    echo "Implicit Docker Path Mapping is missing! check availability of /proc/1/mountinfo" >&2
+fi
