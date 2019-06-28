@@ -11,6 +11,12 @@ if ! which docker ; then
     exit 1
 fi
 
+TMPFILE=$(mktemp /tmp/vso_check.XXXXXX)
+function finish {
+  rm -f "${TMPFILE}"
+}
+trap finish EXIT
+
 docker run \
     --rm \
     --mount "type=bind,src=${TOP},dst=/workspace" \
