@@ -32,7 +32,7 @@ docker-compose run --rm -u "${USEROPT}" app /workspace/ci/in_docker.sh | tee "${
 docker-compose down
 
 # Validate the path mapping has occurred.
-if ! grep "^[#][#]*vso[[].*${BASEDIR}" "${TMPFILE}" ; then
+if ! grep "^[#][#]*vso[[].*${TOP}" "${TMPFILE}" ; then
     echo "Implicit Docker Path Mapping is missing! check availability of /proc/1/mountinfo" >&2
     echo "see https://github.com/tonybaloney/pytest-azurepipelines/pull/25" >&2
     exit 1
