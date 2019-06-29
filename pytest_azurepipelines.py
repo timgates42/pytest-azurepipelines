@@ -119,6 +119,7 @@ def apply_docker_mappings(mountinfo, dockerpath):
     paths are transformed into the host path equivalent so the Azure Pipelines
     finds the file assuming the path has been bind mounted from the host.
     """
+    print(mountinfo)
     for line in mountinfo.splitlines():
         words = line.split(' ')
         if len(words) < 5:
@@ -130,6 +131,8 @@ def apply_docker_mappings(mountinfo, dockerpath):
                 host_mnt_path,
                 dockerpath[len(docker_mnt_path):],
             ])
+            # Just go back one level of mappings
+            return dockerpath
     return dockerpath
 
 
