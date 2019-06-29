@@ -20,6 +20,10 @@ function finish {
 }
 trap finish EXIT
 
+cp "${TOP}/README.rst" "${TOP}/ci/docker/"
+cp "${TOP}/setup.py" "${TOP}/ci/docker/"
+cp "${TOP}/pytest_azurepipeline.py" "${TOP}/ci/docker/"
+
 USEROPT="$(id -u):$(id -g)"
 cd "${TOP}"
 docker-compose build
