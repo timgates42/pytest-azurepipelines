@@ -5,9 +5,12 @@ set -euxo pipefail
 BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 TOP="$( dirname "${BASEDIR}" )"
 
-CMD="${1:-test}"
 if ! which docker ; then
     echo 'Docker is missing!' >&2
+    exit 1
+fi
+if ! which docker-compose ; then
+    echo 'Docker-Compose is missing!' >&2
     exit 1
 fi
 
@@ -17,11 +20,12 @@ function finish {
 }
 trap finish EXIT
 
-docker run \
-    --rm \
-    --mount "type=bind,src=${TOP},dst=/workspace" \
-    ubuntu:18.04 \
-    /workspace/ci/in_docker.sh $(id -u) $(id -g) | tee "${TMPFILE}"
+USEROPT="$(id -u):$(id -g)"
+cd "${TOP}"
+docker-compose build
+docker-compose up -d
+docker-compose run --rm -u "${USEROPT}" /workspace/ci/in_docker.sh | tee "${TMPFILE}"
+docker-compose down
 
 # Validate the path mapping has occurred.
 if ! grep "^[#][#]*vso[[].*${BASEDIR}" "${TMPFILE}" ; then
