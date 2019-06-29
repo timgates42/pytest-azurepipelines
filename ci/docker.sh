@@ -26,4 +26,6 @@ docker run \
 # Validate the path mapping has occurred.
 if ! grep "^[#][#]*vso[[].*${BASEDIR}" "${TMPFILE}" ; then
     echo "Implicit Docker Path Mapping is missing! check availability of /proc/1/mountinfo" >&2
+    echo "see https://github.com/tonybaloney/pytest-azurepipelines/pull/25" >&2
+    exit 1
 fi

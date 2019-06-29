@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import os.path
+import io
+import sys
 import pytest
 
 DEFAULT_PATH = "test-output.xml"
@@ -13,14 +15,6 @@ def pytest_addoption(parser):
         dest="azure_run_title",
         default="Pytest results",
         help="Set the Azure test run title.",
-    )
-    group.addoption(
-        "--path-mapping",
-        action="store",
-        nargs=2,
-        dest="azure_path_mapping",
-        default=[],
-        help="Useful to supply the <container> <host> path mapping if running in docker.",
     )
     group.addoption(
         "--napoleon-docstrings",
@@ -98,12 +92,14 @@ def pytest_sessionfinish(session, exitstatus):
         )
         reportdir = os.path.normpath(os.path.abspath("htmlcov"))
         if os.path.exists(covpath):
-
-            path_mapping = session.config.option.azure_path_mapping
-            if path_mapping and len(path_mapping) == 2:
-                path_mapping_src, path_mapping_dest = path_mapping
-                covpath = covpath.replace(path_mapping_src, path_mapping_dest)
-                reportdir = reportdir.replace(path_mapping_src, path_mapping_dest)
+            if os.path.isfile('/.dockerenv'):
+                with io.open(
+                            '/proc/1/mountinfo', 'r',
+                            encoding=sys.getdefaultencoding()
+                        ) as fobj:
+                    mountinfo = fobj.read()
+                covpath = apply_docker_mappings(mountinfo, covpath)
+                reportdir = apply_docker_mappings(mountinfo, reportdir)
             print(
                 "##vso[codecoverage.publish codecoveragetool=Cobertura;summaryfile={0};reportdirectory={1};]".format(
                     covpath, reportdir
@@ -115,6 +111,26 @@ def pytest_sessionfinish(session, exitstatus):
                     "Coverage XML was not created, skipping upload."
                 )
             )
+
+
+def apply_docker_mappings(mountinfo, dockerpath):
+    """
+    Parse the /proc/1/mountinfo file and apply the mappings so that docker
+    paths are transformed into the host path equivalent so the Azure Pipelines
+    finds the file assuming the path has been bind mounted from the host.
+    """
+    for line in mountinfo.splitlines():
+        words = line.split(' ')
+        if len(words) < 5:
+            continue
+        docker_mnt_path = words[4]
+        host_mnt_path = words[3]
+        if dockerpath.startswith(docker_mnt_path):
+            dockerpath = ''.join([
+                host_mnt_path,
+                dockerpath[len(docker_mnt_path):],
+            ])
+    return dockerpath
 
 
 def pytest_warning_captured(warning_message, when, *args):
