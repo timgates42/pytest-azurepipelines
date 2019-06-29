@@ -24,7 +24,7 @@ USEROPT="$(id -u):$(id -g)"
 cd "${TOP}"
 docker-compose build
 docker-compose up -d
-docker-compose run --rm -u "${USEROPT}" dockertest /workspace/ci/in_docker.sh | tee "${TMPFILE}"
+docker-compose run --rm -u "${USEROPT}" app /workspace/ci/in_docker.sh | tee "${TMPFILE}"
 docker-compose down
 
 # Validate the path mapping has occurred.
