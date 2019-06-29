@@ -97,15 +97,12 @@ To use this feature, add the `--cov` flag with (optional, but required) path to 
 Running in Docker
 -----------------
 
-If running inside a docker container with path mounted in a different
-location, then the path reported by this library will not match the path observed by
-Azure Pipelines. It can be useful to supply the mapping using the command
-line option:
-
-.. code-block:: bash
-
-  --path-mapping [dockerpath] [hostpath]
-
+The plugin attempts to automatically detect if running inside a docker
+container with path mounted in a different location, it will apply
+the mappings to the path to report them back to Azure Pipelines using the path
+from the host that has been bind mounted to the docker container. No
+configuration is required it should just work as long as bind mounting is
+used to the path the pytest output is written to.
 
 Contributing
 ------------
