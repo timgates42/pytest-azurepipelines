@@ -17,4 +17,4 @@ python3 -m pip install --upgrade pip
 python3 -m pip install pytest pytest-cov setuptools
 python3 -m pip install -e .
 python3 -m pytest --cov=. --cov-report=xml -v -m "not testfail" tests
-chown -R $SETUID:$SETGID "${BASEDIR}"
+chown -R $SETUID:$SETGID "${TOP}"

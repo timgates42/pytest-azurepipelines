@@ -131,8 +131,6 @@ def apply_docker_mappings(mountinfo, dockerpath):
                 host_mnt_path,
                 dockerpath[len(docker_mnt_path):],
             ])
-            # Just go back one level of mappings
-            return dockerpath
     return dockerpath
 
 
